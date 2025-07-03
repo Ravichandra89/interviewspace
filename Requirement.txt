@@ -1,0 +1,40 @@
+High Level Feature Breakdown : 
+    1. Interview Flow : 
+        - Session Creation - Interviewer
+        - Invite Link - Role Based
+        - Collabrative Editor - (Candidate ↔ Interviewer)
+        - Code Execution - Run, Test, Multi - Language
+        - Feedback & Sharing
+        - Session Replay
+
+    2. Additional Features : 
+        - Question Bank (CRUD, Tagging, difficulty)
+        - Chat & Video Call Support
+        - User & Org Management
+    
+Contexts : 
+    - Identify - Users, Roles, Permissions
+    - Interview - Session lifeCycle, Scheduling, invitations
+    - Collabration - Real-time code Sync.
+    - Execution - 
+
+
+Approach : 
+   - Roles : Interviewer, Candidate - Invited User's, User -        Platform Users.
+   - Interviewer Auth.. 
+   - Creating Interview Session
+   - Generate Invitation Link
+   - Candidate Joins Interview - Between Auth for Candidate
+   - Voice and Video Call for more Transparency
+   - Code Execution - Run, Test Cases and etc..
+   - Interviewer Feedback for Interview
+
+MicroService :   
+   - FrontEnd
+   - Backend : 
+      - Auth + Session + Profile Management 
+      - Collabrative Code Sync Feature - WebSockets + Video Call Support
+      - Code Execution Service  - Apache Kafka for service.  communication.
+
+
+
