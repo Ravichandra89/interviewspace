@@ -37,4 +37,71 @@ MicroService :
       - Code Execution Service  - Apache Kafka for service.  communication.
 
 
+Database Design : 
+
+User Model :
+    - id <String>
+    - name <String>
+    - email <String>
+    - hashPassword <String>
+    - role <String>
+    - CreatedAt 
+    - UpdatedAt 
+    - session Session[]
+
+// Interview Session - Database Schema
+Session Model : 
+    - id <String>
+    - title <String?>
+    - interviewer User[]
+    - invterviwerId String
+    - participants User[]
+    - problem Problem?
+    - problemId Problem[]
+    - createdAt 
+    - startsAt DateTime?
+    - endsAt DateTime?
+    - executions Execution[]
+
+// Problem Statement - Database Schema
+Problem Model :    
+    - id <String>
+    - title <String>
+    - description <String>
+    - testCases TestCases[]
+    - createdAt DateTime
+
+// Storing Test Cases
+TestCase Model : 
+    - id <String>
+    - problem Problem[]
+    - problemId <String>
+    - input
+    - excepted
+    - order int
+
+Execution Model :
+    - id <String>
+    - session Session[]
+    - sessionId <String>
+    - user User[]
+    - userId <String>
+    - Code <String>
+    - language <String>
+    - status 
+    - createdAt DateTime
+    - completedAt DateTime
+    - result TestResult[]
+
+TestResult Model : 
+    - id <String>
+    - execution Execution
+    - executionId <String>
+    - testCases TestCase[]
+    - testCaseId <String>
+    - passed Boolean
+    - output String
+
+enum Role {ADMIN,  INTERVIEWER, CANDIDATE};
+enum ExecutionStatus {PENDING, RUNNING, SUCCESS, FAILED}
 
