@@ -1,16 +1,23 @@
 {
+  "extends": "../../tsconfig.json",
   "compilerOptions": {
     "target": "ES2020",
     "module": "commonjs",
-    "strict": true,
     "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,
     "moduleResolution": "node",
+    "rootDir": "../../", 
     "outDir": "./dist",
-    "rootDir": "./src",
-    "resolveJsonModule": true,
-    "skipLibCheck": true,
+    "baseUrl": "../../", 
+    "paths": {
+      "@interviewspace/db": ["packages/db/src/index"] 
+    },
+    "skipLibCheck": true
   },
-  "include": ["src/**/*", "src/types/express.d.ts"],
+  "include": [
+    "src/**/*",                
+    "../../packages/db/src/**/*",
+    "src/types/express.d.ts"
+  ],
   "exclude": ["node_modules"]
 }

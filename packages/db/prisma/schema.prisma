@@ -31,6 +31,10 @@ model User {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
+  // Profile Fields
+  companyName String?
+  bio String?
+
   // Relations
   sessions       Session[]   @relation("SessionParticipants")
   interviewerFor Session[]   @relation("InterviewerSessions")
@@ -44,6 +48,8 @@ model Session {
   createdAt DateTime  @default(now())
   startsAt  DateTime?
   endsAt    DateTime?
+
+  inviteToken String @unique  // Candidate invitation token
 
   // Interviewer Relation
   interviewer   User   @relation("InterviewerSessions", fields: [interviewerId], references: [id])

@@ -1,16 +1,39 @@
-// import express from "express";
-// import cookieParser from "cookie-parser";
-// import cors from "cors";
+import dotenv from "dotenv";
+import express from "express";
+import cors from "cors";
+import cookieParser from "cookie-parser";
+import authRouter from "./routes/auth.route";
+import prisma from "@interviewspace/db";
+import profileRoute from "./routes/profile.route";
 
-// const app = express();
-// const PORT = process.env.PORT || 4000;
+dotenv.config();
 
-// // Middlewares uses
-// app.use(express.json());
-// app.use(express.urlencoded({ extended : true }));
-// app.use(cookieParser());
-// app.use(cors());
+const app = express();
+const port = process.env.PORT;
 
-// //Define the Auth Router Here
-// app.use('/api/v1/auth', )
+// Middleware Uses
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+app.use(cors());
+app.use(cookieParser());
 
+// Define the Routes
+app.use("/api/v1/auth", authRouter);
+app.use("/api/v1/profile", profileRoute);
+
+const startServer = async () => {
+  try {
+    await prisma.$connect();
+    console.log("🟢 Prisma connected to database");
+
+    app.listen(port, () => {
+      console.log(`🚀 Auth service listening on port ${port}`);
+    });
+  } catch (error) {
+    console.error("🔴 Failed to connect to the database", error);
+    process.exit(1);
+  }
+};
+
+// Run the Function
+startServer();
