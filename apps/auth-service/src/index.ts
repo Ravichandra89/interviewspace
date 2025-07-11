@@ -5,6 +5,7 @@ import cookieParser from "cookie-parser";
 import authRouter from "./routes/auth.route";
 import prisma from "@interviewspace/db";
 import profileRoute from "./routes/profile.route";
+import sessionRouter from "./routes/session.route";
 
 dotenv.config();
 
@@ -20,6 +21,7 @@ app.use(cookieParser());
 // Define the Routes
 app.use("/api/v1/auth", authRouter);
 app.use("/api/v1/profile", profileRoute);
+app.use("/api/v1/session", sessionRouter);
 
 const startServer = async () => {
   try {

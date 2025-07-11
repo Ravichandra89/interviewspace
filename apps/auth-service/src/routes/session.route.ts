@@ -6,10 +6,10 @@ import {
   listInterviewerSessions,
 } from "../controller/session.controller";
 
-const router = Router();
+const sessionRouter = Router();
 
-router.post("/", validateToken, CreateSession);
-router.get("/", validateToken, listInterviewerSessions);
-router.get("/:id", validateToken, getSessionById);
+sessionRouter.post("/", validateToken, CreateSession);
+sessionRouter.get("/", validateToken, listInterviewerSessions);
+sessionRouter.get("/:id", validateToken, getSessionById);
 
-export default router;
+export default sessionRouter;

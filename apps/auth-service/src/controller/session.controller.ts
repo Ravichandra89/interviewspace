@@ -2,7 +2,9 @@ import { Request, Response } from "express";
 import prisma from "@interviewspace/db";
 import kafkaProducer from "../kafka/producer";
 import apiResponse from "../utils/apiResponse";
+import jwt from "jsonwebtoken";
 import { v4 as uuidV4 } from "uuid";
+import scheduledInviteEmail from "../schedule";
 
 interface AuthRequest extends Request {
   user: {
@@ -24,24 +26,46 @@ export const CreateSession = async (
     }
 
     // Take the problemId, title
-    const { title, problemId, startsAt } = req.body;
+    const { title, problemId, startsAt, participantsIds } = req.body;
 
-    const inviteToken = uuidV4();
+    if (!startsAt || !participantsIds.length) {
+      apiResponse(
+        res,
+        false,
+        400,
+        "StartsAt and Participants Id's are required"
+      );
+    }
 
-    // Create the Interview Session
     const session = await prisma.session.create({
       data: {
         interviewerId,
-        title: title ?? null,
-        problemId: problemId ?? null,
-        startsAt: startsAt ? new Date(startsAt) : null,
-        inviteToken,
+        title: title || null,
+        problemId: problemId || null,
+        startsAt: new Date(startsAt),
+        participants: {
+          connect: participantsIds.map((id: string) => ({ id })),
+        },
+      },
+      include: {
+        participants: true,
       },
     });
 
-    // TODO: Publish Kafka Event
+    // Generating the Invite token
+    const inviteToken = jwt.sign(
+      { sessionId: session.id, role: "CANDIDATE" },
+      process.env.JWT_SECRET!,
+      { expiresIn: "3h" }
+    );
 
-    apiResponse(res, true, 201, "Session Created", { session });
+    // Call the scheduleInviteEmail
+    scheduledInviteEmail(session.startsAt, inviteToken, session.participants);
+
+    apiResponse(res, true, 200, "Created Sessoin", {
+      session,
+      inviteToken,
+    });
   } catch (error) {
     console.error("Create Session Error", error);
     apiResponse(res, false, 500, "Create Session Error");
