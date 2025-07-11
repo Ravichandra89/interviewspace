@@ -11,8 +11,10 @@
   "license": "ISC",
   "dependencies": {
     "@interviewspace/db": "file:/../../packages/db",
+    "@types/cors": "^2.8.19",
     "@types/date-fns": "^2.6.3",
     "@types/express": "^5.0.3",
+    "cors": "^2.8.5",
     "date-fns": "^4.1.0",
     "dotenv": "^17.2.0",
     "express": "^5.1.0",
