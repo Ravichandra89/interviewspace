@@ -1,0 +1,31 @@
+This Service main task is to execute the code getting from the kafka Produced event from Collab_Service as : 
+export const sendCodeSubmission = async (
+  sessionId: string,
+  userId: string,
+  language: string,
+  code: string
+) => {
+  try {
+    await producer.send({
+      topic: "code-submissions",
+      messages: [
+        {
+          key: sessionId,
+          value: JSON.stringify({ sessionId, userId, language, code }),
+        },
+      ],
+    });
+
+    console.log("Sent code submission to Kafka");
+  } catch (error) {
+    console.error("[Collab Service] Kafka Send error", error);
+  }
+};
+
+
+2. To execute the code I decided to make the various containers based on languages like : cpp, java, python and etc... docker containers - Using docker
+
+3. Based on the language type triggers these containers to execute the code and Sending back the the Result of executed code to the collabService using Kafka - CorrelationI'D
+
+
+

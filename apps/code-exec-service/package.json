@@ -1,0 +1,22 @@
+{
+  "name": "code-exec-service",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@types/express": "^5.0.3",
+    "@types/kafkajs": "^1.9.0",
+    "@types/node": "^24.0.13",
+    "express": "^5.1.0",
+    "kafkajs": "^2.2.4",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.8.3",
+    "uuid": "^11.1.0"
+  }
+}
