@@ -1,6 +1,7 @@
 import connectKafka, { consumer, producer } from "../config/kafka";
 import { runCodeInDocker } from "../executor/DockerExecutor";
 import { v4 as uuidv4 } from "uuid";
+import prisma from "@interviewspace/db";
 
 // HandleCodeSubmission
 const handleCodeSubmission = async () => {
@@ -21,6 +22,19 @@ const handleCodeSubmission = async () => {
       console.log("Received submission: ", correlationId, payload);
       try {
         const result = await runCodeInDocker(language, code, correlationId);
+
+        // Save the ExecutionResult to ExecutionHistory - TODO: Updated
+        await prisma.executionHistory.create({
+          data: {
+            sessionId,
+            userId,
+            language,
+            code,
+            output: result.stdout,
+            error: result.stderr || null,
+            status: result.exitCode === 0 ? "success" : "error",
+          },
+        });
 
         // Send the ExecutionResult to the results topic
         await producer.send({
