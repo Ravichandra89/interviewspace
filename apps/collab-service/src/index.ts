@@ -5,6 +5,8 @@ import gateway from "./gateway/websocket";
 import { startProducer, sendCodeSubmission } from "./config/kafkaProducer";
 import cors from "cors";
 
+import startConsumer from "./config/kafkaConsumer";
+
 dotenv.config();
 
 // Initializing the kafka Producer
@@ -40,5 +42,8 @@ const wss = new WebSocketServer({
   server: http,
 });
 gateway(wss);
+
+// Starting the kafka consumer
+startConsumer(wss);
 
 console.log("CollabService Initialized");
