@@ -69,6 +69,7 @@ model Problem {
   id          String   @id @default(uuid())
   title       String
   description String
+  points      Int      @default(100)
   createdAt   DateTime @default(now())
 
   testCases TestCase[]
