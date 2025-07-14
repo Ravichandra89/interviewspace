@@ -14,7 +14,7 @@ interface AuthRequest extends Request {
 const createProblem = async (req: Request, res: Response): Promise<void> => {
   const { id: inteviewerId, role } = req.user;
   const { sessionId } = req.params;
-  const { title, description, testCases } = req.body;
+  const { title, description, testCases, points } = req.body;
 
   // Check the role first
   if (role !== "interviewer") {
@@ -58,6 +58,7 @@ const createProblem = async (req: Request, res: Response): Promise<void> => {
             order: ind + 1,
           })),
         },
+        points,
       },
     });
 
@@ -174,7 +175,7 @@ export const updateProblem = async (
   res: Response
 ): Promise<void> => {
   const { id } = req.params;
-  const { title, description, testCases } = req.body;
+  const { title, description, testCases, points } = req.body;
 
   try {
     const updatedProblem = await prisma.problem.update({
@@ -184,6 +185,7 @@ export const updateProblem = async (
       data: {
         title,
         description,
+        points,
       },
     });
 
