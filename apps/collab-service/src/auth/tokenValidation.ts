@@ -7,9 +7,13 @@ export interface InvitePayload extends JwtPayload {
   userId?: string;
 }
 
-const validateInviteToken = async (
-  token: string
-): Promise<InvitePayload> => {
+export interface UserContext {
+  userId: string;
+  role: string;
+  sessionId: string;
+}
+
+const validateInviteToken = async (token: string): Promise<InvitePayload> => {
   const secret = process.env.JWT_SECRET;
   if (!secret) {
     throw new Error("JWT_SECRET environment variable is not set");

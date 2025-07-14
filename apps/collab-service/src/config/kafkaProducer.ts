@@ -7,6 +7,9 @@ const kafka = new Kafka({
 });
 
 const producer = kafka.producer();
+export const consumer = kafka.consumer({
+  groupId: process.env.KAFKA_GROUP_ID || "collab-service-group",
+});
 
 export const startProducer = async () => {
   await producer.connect();
