@@ -6,18 +6,18 @@
     "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,
     "moduleResolution": "node",
-    "rootDir": "../../", 
+    "baseUrl": "./",                        // important for correct relative resolution
+    "rootDir": "./src",                     // assumes your main code lives in `src/`
     "outDir": "./dist",
-    "baseUrl": "../../", 
+    "typeRoots": ["./src/types", "./node_modules/@types"],
     "paths": {
-      "@interviewspace/db": ["packages/db/src/index"] 
+      "@interviewspace/db": ["../../packages/db/src/index"]
     },
     "skipLibCheck": true
   },
   "include": [
-    "src/**/*",                
-    "../../packages/db/src/**/*",
-    "src/types/express.d.ts"
+    "src",                                  // includes everything inside src
+    "../../packages/db/src"
   ],
-  "exclude": ["node_modules"]
+  "exclude": ["node_modules", "dist"]
 }

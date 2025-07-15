@@ -21,11 +21,12 @@ export const CreateSession = async (
 ): Promise<void> => {
   try {
     const { id: interviewerId, role } = req.user;
-    if (role != "INTERVIEWER") {
+
+    if (role !== "INTERVIEWER") {
       apiResponse(res, false, 404, "Only interviewer can create sessions");
+      return;
     }
 
-    // Take the problemId, title
     const { title, problemId, startsAt, participantsIds } = req.body;
 
     if (!startsAt || !participantsIds.length) {
@@ -35,14 +36,24 @@ export const CreateSession = async (
         400,
         "StartsAt and Participants Id's are required"
       );
+      return;
     }
 
+    // Pre-generate the invite token
+    const generatedInviteToken = jwt.sign(
+      { role: "CANDIDATE" }, // sessionId will be known after create, so only use role
+      process.env.JWT_SECRET!,
+      { expiresIn: "3h" }
+    );
+
+    // Create the session
     const session = await prisma.session.create({
       data: {
-        interviewerId,
         title: title || null,
-        problemId: problemId || null,
         startsAt: new Date(startsAt),
+        inviteToken: generatedInviteToken, // 💡 Required field now added
+        problem: problemId ? { connect: { id: problemId } } : undefined,
+        interviewer: { connect: { id: interviewerId } },
         participants: {
           connect: participantsIds.map((id: string) => ({ id })),
         },
@@ -52,19 +63,15 @@ export const CreateSession = async (
       },
     });
 
-    // Generating the Invite token
-    const inviteToken = jwt.sign(
-      { sessionId: session.id, role: "CANDIDATE" },
-      process.env.JWT_SECRET!,
-      { expiresIn: "3h" }
+    scheduledInviteEmail(
+      session.startsAt,
+      session.inviteToken,
+      session.participants
     );
 
-    // Call the scheduleInviteEmail
-    scheduledInviteEmail(session.startsAt, inviteToken, session.participants);
-
-    apiResponse(res, true, 200, "Created Sessoin", {
+    apiResponse(res, true, 200, "Created Session", {
       session,
-      inviteToken,
+      inviteToken: session.inviteToken,
     });
   } catch (error) {
     console.error("Create Session Error", error);
@@ -113,7 +120,7 @@ export const listInterviewerSessions = async (
       },
     });
 
-    if (sessions.empty()) {
+    if (sessions.length === 0) {
       apiResponse(res, false, 409, "Interview Sessions are not there");
     }
 

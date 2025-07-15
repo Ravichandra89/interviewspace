@@ -10,30 +10,39 @@ export const getProfile = async (
   try {
     const { id, role } = req.body;
 
-    const user = await prisma.user.findUnique({
-      where: { id },
-      select: {
-        id: true,
-        name: true,
-        email: true,
-        role: true,
-        companyName: true,
-        bio: true,
-      },
-      include:
-        role === "CANDIDATE"
-          ? {
+    const user =
+      role === "CANDIDATE"
+        ? await prisma.user.findUnique({
+            where: { id },
+            include: {
               sessions: {
-                where: { participants: { some: { id } } },
-                select: { id: true, title: true, startsAt: true, endsAt: true },
-              },
-            }
-          : {
-              interviewerFor: {
-                select: { id: true, title: true, startsAt: true, endsAt: true },
+                where: {
+                  participants: {
+                    some: { id },
+                  },
+                },
+                select: {
+                  id: true,
+                  title: true,
+                  startsAt: true,
+                  endsAt: true,
+                },
               },
             },
-    });
+          })
+        : await prisma.user.findUnique({
+            where: { id },
+            include: {
+              interviewerFor: {
+                select: {
+                  id: true,
+                  title: true,
+                  startsAt: true,
+                  endsAt: true,
+                },
+              },
+            },
+          });
 
     if (!user) {
       apiResponse(res, false, 404, "User not found");

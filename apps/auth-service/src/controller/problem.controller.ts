@@ -86,55 +86,26 @@ export const listProblems = async (
   res: Response
 ): Promise<void> => {
   const { id: userId, role, sessionId } = req.user;
+
   try {
     let problems;
-    if (role === "interviewer") {
-      // Fetching session with problems
-      const session = await prisma.session.findUnique({
-        where: {
-          id: sessionId,
-        },
-        include: {
-          problems: {
-            include: {
-              testCases: true,
-            },
-          },
-        },
-      });
-      problems = session.map((s) => s.problem!);
-    } else {
-      if (!sessionId) {
-        apiResponse(
-          res,
-          false,
-          400,
-          "Session ID is required for non-interviewer roles"
-        );
-      }
 
-      // Fetching problem for the session
-      const session = await prisma.session.findUnique({
-        where: {
-          id: sessionId,
+    const session = await prisma.session.findUnique({
+      where: { id: sessionId },
+      include: {
+        problem: {
+          include: { testCases: true },
         },
-        include: {
-          problem: {
-            include: {
-              testCases: true,
-            },
-          },
-        },
-      });
+      },
+    });
 
-      if (!session || !session.problem) {
-        apiResponse(res, false, 404, "Problem not found for this session");
-      }
-
-      problems = [session.problem];
+    if (!session || !session.problem) {
+      apiResponse(res, false, 404, "Problem not found for this session");
+      return;
     }
 
-    // Return the problems
+    problems = [session.problem]; // always return an array for uniformity
+
     apiResponse(res, true, 200, "Problems fetched successfully", {
       problems,
     });
@@ -204,6 +175,7 @@ export const updateProblem = async (
           problemId: id,
           input: testCase.input,
           output: testCase.output,
+          expected: testCase.expected,
           order: ind + 1,
         })),
       });
