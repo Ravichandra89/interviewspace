@@ -124,10 +124,13 @@ model ExecutionHistory {
   id        String   @id @default(uuid())
   sessionId String
   userId    String
-  language  String
-  code      String
-  output    String
+  language  String?
+  code      String?
+  output    String?
   error     String?
   status    String // ERROR, SUCCESS, PENDING
   createdAt DateTime @default(now())
+
+  problemId String?
+  points Int?
 }
