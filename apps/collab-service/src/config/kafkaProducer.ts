@@ -1,5 +1,8 @@
 import { previousDay } from "date-fns";
 import { Kafka, Producer } from "kafkajs";
+import dotenv from 'dotenv';
+
+dotenv.config();
 
 const kafka = new Kafka({
   clientId: "collab-service",

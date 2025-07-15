@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "dev": "ts-node-dev --respaws src/index.ts"
+    "dev": "ts-node-dev --respawn src/index.ts"
   },
   "keywords": [],
   "author": "",
@@ -20,7 +20,8 @@
     "express": "^5.1.0",
     "ioredis": "^5.6.1",
     "jsonwebtoken": "^9.0.2",
-    "kafkajs": "^2.2.4"
+    "kafkajs": "^2.2.4",
+    "ws": "^8.18.3"
   },
   "devDependencies": {
     "@types/ioredis": "^5.0.0",
